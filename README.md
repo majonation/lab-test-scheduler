@@ -2,6 +2,8 @@
 
 A scalable, cost-effective distributed job scheduler designed for lab test measurements and experiments in a modern biotech/chemistry lab environment.
 
+Find the design document in the docs folder.
+
 ---
 
 ## Overview
