@@ -1,0 +1,22 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Task {
+  id                String   @id @default(uuid())
+  name              String
+  createdAt         DateTime @default(now())
+  status            String   // 'Scheduled' | 'Failed' | 'Executed'
+  scheduleType      String   // 'oneTime' | 'recurring'
+  scheduleValue     String
+  testType          String
+  experimentType    String
+  notificationEmails String[]
+
+  @@map("tasks")  // This maps the model to a lowercase table name
+} 
