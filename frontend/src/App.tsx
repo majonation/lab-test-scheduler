@@ -20,9 +20,15 @@ function App() {
         isLoading={isLoading}
         error={error}
         isUpdating={isLoading}
-        onCreateTask={createTask}
-        onDeleteTask={deleteTask}
-        onUpdateTask={updateTask}
+        onCreateTask={async (formData) => {
+          await createTask(formData);
+        }}
+        onDeleteTask={async (task) => {
+          await deleteTask(task);
+        }}
+        onUpdateTask={async (task) => {
+          await updateTask(task);
+        }}
         onFetchTaskLogs={fetchTaskLogs}
       />
     </div>
