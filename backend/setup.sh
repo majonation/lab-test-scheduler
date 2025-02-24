@@ -22,6 +22,7 @@ npx prisma migrate deploy
 echo "Pushing schema changes..."
 npx prisma db push --accept-data-loss
 
-# Start the server
-echo "Starting server..."
-npm run dev 
+# Run seed if needed
+echo "Running seeds..."
+npx prisma db seed
+
