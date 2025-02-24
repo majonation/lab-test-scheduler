@@ -27,8 +27,6 @@ export function TaskListPage({
   isLoading,
   error,
   isUpdating,
-  onDeleteTask,
-  onUpdateTask,
   onFetchTaskLogs,
 }: Props) {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
@@ -89,7 +87,7 @@ export function TaskListPage({
 
   const handleUpdateTask = async (updatedTask: Task) => {
     try {
-      await onUpdateTask(updatedTask);
+      await api.updateTask(updatedTask);
       setIsEditModalOpen(false);
     } catch (err) {
       console.error("Failed to update task:", err);
@@ -104,7 +102,7 @@ export function TaskListPage({
   const handleDeleteConfirm = async () => {
     if (selectedTask) {
       try {
-        await onDeleteTask(selectedTask.id);
+        await api.deleteTask(selectedTask.id);
         setIsDeleteModalOpen(false);
         setSelectedTask(null);
       } catch (err) {

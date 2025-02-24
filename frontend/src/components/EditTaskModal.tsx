@@ -1,13 +1,23 @@
-import React, { useState, useEffect } from 'react';
-import { Task, CreateTaskForm, LAB_TEST_TYPES, EXPERIMENT_TYPES } from '../types';
-import { describeCronExpression, validateCronExpression, validateTimeInput, validateDateTime } from '../utils/cronParser';
-import { Button } from './ui/button';
-import { Textarea } from './ui/textarea';
-import { Label } from './ui/label';
-import { Input } from './ui/input';
-import { Tabs, TabsList, TabsTrigger, TabsContent } from './ui/tabs';
-import { Modal } from './ui/modal';
-import { X } from 'lucide-react';
+import React, { useState, useEffect } from "react";
+import {
+  Task,
+  CreateTaskForm,
+  LAB_TEST_TYPES,
+  EXPERIMENT_TYPES,
+} from "../types";
+import {
+  describeCronExpression,
+  validateCronExpression,
+  validateTimeInput,
+  validateDateTime,
+} from "../utils/cronParser";
+import { Button } from "./ui/button";
+import { Textarea } from "./ui/textarea";
+import { Label } from "./ui/label";
+import { Input } from "./ui/input";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "./ui/tabs";
+import { Modal } from "./ui/modal";
+import { X } from "lucide-react";
 
 interface Props {
   isOpen: boolean;
@@ -18,43 +28,43 @@ interface Props {
 
 // Default form values to ensure controlled inputs
 const defaultFormValues: CreateTaskForm = {
-  name: '',
-  scheduleType: 'oneTime',
-  date: new Date().toISOString().split('T')[0],
-  cronExpression: '* * * * *',
-  hours: '0',
-  minutes: '0',
-  seconds: '0',
+  name: "",
+  scheduleType: "oneTime",
+  date: new Date().toISOString().split("T")[0],
+  cronExpression: "* * * * *",
+  hours: "0",
+  minutes: "0",
+  seconds: "0",
   testType: LAB_TEST_TYPES[0].id,
   experimentType: EXPERIMENT_TYPES[0].id,
-  notificationEmails: []
+  notificationEmails: [],
 };
 
 export function EditTaskModal({ isOpen, onClose, onSubmit, task }: Props) {
   const [form, setForm] = useState<CreateTaskForm>(defaultFormValues);
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const [emailInput, setEmailInput] = useState('');
+  const [emailInput, setEmailInput] = useState("");
 
   useEffect(() => {
     if (task) {
-      if (task.schedule.type === 'oneTime') {
+      if (task.schedule.type === "oneTime") {
         const date = new Date(task.schedule.value);
         setForm({
           name: task.name,
-          scheduleType: 'oneTime',
-          date: date.toISOString().split('T')[0],
-          hours: date.getHours().toString().padStart(2, '0'),
-          minutes: date.getMinutes().toString().padStart(2, '0'),
-          seconds: date.getSeconds().toString().padStart(2, '0'),
+          scheduleType: "oneTime",
+          date: date.toISOString().split("T")[0],
+          hours: date.getHours().toString().padStart(2, "0"),
+          minutes: date.getMinutes().toString().padStart(2, "0"),
+          seconds: date.getSeconds().toString().padStart(2, "0"),
           cronExpression: defaultFormValues.cronExpression,
           testType: task.testType,
           experimentType: task.experimentType,
-          notificationEmails: task.notificationEmails
+          notificationEmails: task.notificationEmails,
         });
       } else {
         setForm({
           name: task.name,
-          scheduleType: 'recurring',
+          scheduleType: "recurring",
           cronExpression: task.schedule.value,
           date: defaultFormValues.date,
           hours: defaultFormValues.hours,
@@ -62,7 +72,7 @@ export function EditTaskModal({ isOpen, onClose, onSubmit, task }: Props) {
           seconds: defaultFormValues.seconds,
           testType: task.testType,
           experimentType: task.experimentType,
-          notificationEmails: task.notificationEmails
+          notificationEmails: task.notificationEmails,
         });
       }
     }
@@ -76,46 +86,54 @@ export function EditTaskModal({ isOpen, onClose, onSubmit, task }: Props) {
     const email = emailInput.trim();
     if (email && validateEmail(email)) {
       if (!form.notificationEmails.includes(email)) {
-        setForm(prev => ({
+        setForm((prev) => ({
           ...prev,
-          notificationEmails: [...prev.notificationEmails, email]
+          notificationEmails: [...prev.notificationEmails, email],
         }));
       }
-      setEmailInput('');
-      setErrors(prev => ({ ...prev, email: undefined }));
+      setEmailInput("");
+      setErrors((prev) => ({ ...prev, email: undefined }));
     } else {
-      setErrors(prev => ({ ...prev, email: 'Please enter a valid email address' }));
+      setErrors((prev) => ({
+        ...prev,
+        email: "Please enter a valid email address",
+      }));
     }
   };
 
   const handleRemoveEmail = (email: string) => {
-    setForm(prev => ({
+    setForm((prev) => ({
       ...prev,
-      notificationEmails: prev.notificationEmails.filter(e => e !== email)
+      notificationEmails: prev.notificationEmails.filter((e) => e !== email),
     }));
   };
 
   const validate = () => {
     const newErrors: Record<string, string> = {};
-    
+
     if (!form.name.trim()) {
-      newErrors.name = 'Name is required';
+      newErrors.name = "Name is required";
     } else if (form.name.length > 250) {
-      newErrors.name = 'Name must be 250 characters or less';
+      newErrors.name = "Name must be 250 characters or less";
     }
 
-    if (form.scheduleType === 'oneTime') {
+    if (form.scheduleType === "oneTime") {
       if (!form.date) {
-        newErrors.date = 'Date is required';
+        newErrors.date = "Date is required";
       }
       if (!validateTimeInput(form.hours!, form.minutes!, form.seconds!)) {
-        newErrors.time = 'Invalid time format';
-      } else if (!validateDateTime(form.date, form.hours!, form.minutes!, form.seconds!)) {
-        newErrors.time = 'Task cannot be scheduled in the past';
+        newErrors.time = "Invalid time format";
+      } else if (
+        !validateDateTime(form.date, form.hours!, form.minutes!, form.seconds!)
+      ) {
+        newErrors.time = "Task cannot be scheduled in the past";
       }
     } else {
-      if (!form.cronExpression || !validateCronExpression(form.cronExpression)) {
-        newErrors.cronExpression = 'Invalid cron expression';
+      if (
+        !form.cronExpression ||
+        !validateCronExpression(form.cronExpression)
+      ) {
+        newErrors.cronExpression = "Invalid cron expression";
       }
     }
 
@@ -127,19 +145,19 @@ export function EditTaskModal({ isOpen, onClose, onSubmit, task }: Props) {
     if (validate()) {
       try {
         let scheduleValue: string;
-        
-        if (form.scheduleType === 'oneTime') {
-          const hours = form.hours!.padStart(2, '0');
-          const minutes = form.minutes!.padStart(2, '0');
-          const seconds = form.seconds!.padStart(2, '0');
-          
+
+        if (form.scheduleType === "oneTime") {
+          const hours = form.hours!.padStart(2, "0");
+          const minutes = form.minutes!.padStart(2, "0");
+          const seconds = form.seconds!.padStart(2, "0");
+
           const dateTimeString = `${form.date}T${hours}:${minutes}:${seconds}`;
           const date = new Date(dateTimeString);
-          
+
           if (isNaN(date.getTime())) {
-            throw new Error('Invalid date/time combination');
+            throw new Error("Invalid date/time combination");
           }
-          
+
           scheduleValue = date.toISOString();
         } else {
           scheduleValue = form.cronExpression!;
@@ -150,18 +168,18 @@ export function EditTaskModal({ isOpen, onClose, onSubmit, task }: Props) {
           name: form.name,
           schedule: {
             type: form.scheduleType,
-            value: scheduleValue
+            value: scheduleValue,
           },
           testType: form.testType,
           experimentType: form.experimentType,
-          notificationEmails: form.notificationEmails
+          notificationEmails: form.notificationEmails,
         };
-        
+
         onSubmit(updatedTask);
       } catch (error) {
-        setErrors(prev => ({
+        setErrors((prev) => ({
           ...prev,
-          time: 'Invalid date/time combination'
+          time: "Invalid date/time combination",
         }));
       }
     }
@@ -186,9 +204,9 @@ export function EditTaskModal({ isOpen, onClose, onSubmit, task }: Props) {
   );
 
   return (
-    <Modal 
-      isOpen={isOpen} 
-      onClose={onClose} 
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
       title="Edit Lab Test"
       actions={modalActions}
     >
@@ -226,11 +244,18 @@ export function EditTaskModal({ isOpen, onClose, onSubmit, task }: Props) {
           <select
             id="experimentType"
             value={form.experimentType}
-            onChange={(e) => setForm({ ...form, experimentType: Number(e.target.value) as any })}
+            onChange={(e) =>
+              setForm({
+                ...form,
+                experimentType: Number(e.target.value) as number,
+              })
+            }
             className="mt-1.5 w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
           >
-            {EXPERIMENT_TYPES.map(type => (
-              <option key={type.id} value={type.id}>{type.label}</option>
+            {EXPERIMENT_TYPES.map((type) => (
+              <option key={type.id} value={type.id}>
+                {type.label}
+              </option>
             ))}
           </select>
         </div>
@@ -240,16 +265,25 @@ export function EditTaskModal({ isOpen, onClose, onSubmit, task }: Props) {
           <select
             id="testType"
             value={form.testType}
-            onChange={(e) => setForm({ ...form, testType: e.target.value as any })}
+            onChange={(e) =>
+              setForm({ ...form, testType: Number(e.target.value) as number })
+            }
             className="mt-1.5 w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
           >
-            {LAB_TEST_TYPES.map(type => (
-              <option key={type.id} value={type.id}>{type.label}</option>
+            {LAB_TEST_TYPES.map((type) => (
+              <option key={type.id} value={type.id}>
+                {type.label}
+              </option>
             ))}
           </select>
         </div>
 
-        <Tabs value={form.scheduleType} onValueChange={(value) => setForm({ ...form, scheduleType: value as 'oneTime' | 'recurring' })}>
+        <Tabs
+          value={form.scheduleType}
+          onValueChange={(value) =>
+            setForm({ ...form, scheduleType: value as "oneTime" | "recurring" })
+          }
+        >
           <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="oneTime">One Time</TabsTrigger>
             <TabsTrigger value="recurring">Recurring</TabsTrigger>
@@ -265,7 +299,7 @@ export function EditTaskModal({ isOpen, onClose, onSubmit, task }: Props) {
                 className="mt-1.5"
               />
             </div>
-            
+
             <div className="grid grid-cols-3 gap-2">
               <div>
                 <Label htmlFor="hours">Hours</Label>
@@ -287,7 +321,9 @@ export function EditTaskModal({ isOpen, onClose, onSubmit, task }: Props) {
                   min="0"
                   max="59"
                   value={form.minutes}
-                  onChange={(e) => setForm({ ...form, minutes: e.target.value })}
+                  onChange={(e) =>
+                    setForm({ ...form, minutes: e.target.value })
+                  }
                   className="mt-1.5"
                 />
               </div>
@@ -299,7 +335,9 @@ export function EditTaskModal({ isOpen, onClose, onSubmit, task }: Props) {
                   min="0"
                   max="59"
                   value={form.seconds}
-                  onChange={(e) => setForm({ ...form, seconds: e.target.value })}
+                  onChange={(e) =>
+                    setForm({ ...form, seconds: e.target.value })
+                  }
                   className="mt-1.5"
                 />
               </div>
@@ -312,15 +350,18 @@ export function EditTaskModal({ isOpen, onClose, onSubmit, task }: Props) {
                 type="text"
                 id="cronExpression"
                 value={form.cronExpression}
-                onChange={(e) => setForm({ ...form, cronExpression: e.target.value })}
+                onChange={(e) =>
+                  setForm({ ...form, cronExpression: e.target.value })
+                }
                 placeholder="* * * * *"
                 className="mt-1.5"
               />
-              {form.cronExpression && validateCronExpression(form.cronExpression) && (
-                <p className="text-sm text-gray-600 mt-1.5">
-                  {describeCronExpression(form.cronExpression)}
-                </p>
-              )}
+              {form.cronExpression &&
+                validateCronExpression(form.cronExpression) && (
+                  <p className="text-sm text-gray-600 mt-1.5">
+                    {describeCronExpression(form.cronExpression)}
+                  </p>
+                )}
             </div>
           </TabsContent>
         </Tabs>
@@ -335,13 +376,13 @@ export function EditTaskModal({ isOpen, onClose, onSubmit, task }: Props) {
                 value={emailInput}
                 onChange={(e) => setEmailInput(e.target.value)}
                 onKeyDown={(e) => {
-                  if (e.key === 'Enter') {
+                  if (e.key === "Enter") {
                     e.preventDefault();
                     handleAddEmail();
                   }
                 }}
                 placeholder="Enter email address..."
-                className={errors.email ? 'border-red-300' : ''}
+                className={errors.email ? "border-red-300" : ""}
               />
               <Button
                 type="button"
@@ -356,7 +397,7 @@ export function EditTaskModal({ isOpen, onClose, onSubmit, task }: Props) {
             )}
             {form.notificationEmails.length > 0 && (
               <div className="flex flex-wrap gap-2">
-                {form.notificationEmails.map(email => (
+                {form.notificationEmails.map((email) => (
                   <div
                     key={email}
                     className="flex items-center gap-1 px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-sm"

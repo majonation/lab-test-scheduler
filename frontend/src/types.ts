@@ -15,8 +15,6 @@ export const EXPERIMENT_TYPES = [
   { id: 10, label: "Kappa-Validation-010" }
 ] as const;
 
-export type ExperimentType = typeof EXPERIMENT_TYPES[number]['id'];
-
 /**
  * Available lab test types with their IDs and full names
  * These represent different laboratory testing methodologies
@@ -28,8 +26,6 @@ export const LAB_TEST_TYPES = [
   { id: 4, label: 'X-Ray Crystallography' },
   { id: 5, label: 'High-Throughput Screening (HTS) Assays' }
 ] as const;
-
-export type LabTestType = typeof LAB_TEST_TYPES[number]['id'];
 
 /**
  * Represents a scheduled task in the system
@@ -53,9 +49,9 @@ export interface Task {
     value: string;
   };
   /** Type of lab test being performed */
-  testType: LabTestType;
+  testType: number;
   /** Type of experiment being conducted */
-  experimentType: ExperimentType;
+  experimentType: number;
   /** List of email addresses to notify about task status */
   notificationEmails: string[];
 }
