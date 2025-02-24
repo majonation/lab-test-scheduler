@@ -8,15 +8,18 @@ datasource db {
 }
 
 model Task {
-  id                String   @id @default(uuid())
+  id                String    @id @default(uuid())
   name              String
-  createdAt         DateTime @default(now())
-  status            String   // 'Scheduled' | 'Failed' | 'Executed'
-  scheduleType      String   // 'oneTime' | 'recurring'
-  scheduleValue     String
-  testType          Int      // Changed from String to Int
-  experimentType    Int      // Changed from String to Int
-  notificationEmails String[]
+  createdAt         DateTime  @default(now()) @map("created_at")
+  status            String    // 'Scheduled' | 'Failed' | 'Executed'
+  scheduleType      String    @map("schedule_type")    // 'oneTime' | 'recurring'
+  scheduleValue     String    @map("schedule_value")
+  testType          Int       @map("test_type")
+  experimentType    Int       @map("experiment_type")
+  notificationEmails String[] @map("notification_emails")
+  lockedAt          DateTime? @map("locked_at")
+  lockExpires       DateTime? @map("lock_expires")
+  nextExecutionDate DateTime? @map("next_execution_date")
 
   @@map("tasks")  // This maps the model to a lowercase table name
 } 
