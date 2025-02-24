@@ -1,5 +1,4 @@
 import { PrismaClient } from '@prisma/client';
-import { ExperimentType, LabTestType } from '../src/types';
 
 const prisma = new PrismaClient();
 
@@ -23,7 +22,7 @@ async function main() {
     prisma.task.create({
       data: {
         name: "Sample Test 2",
-        status: "Executed",
+        status: "Scheduled",
         scheduleType: "recurring",
         scheduleValue: "0 0 * * *",
         testType: 2,

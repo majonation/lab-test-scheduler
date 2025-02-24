@@ -1,5 +1,10 @@
 import React, { useState } from "react";
-import { CreateTaskForm, LAB_TEST_TYPES, EXPERIMENT_TYPES } from "../types";
+import {
+  CreateTaskForm,
+  LAB_TEST_TYPES,
+  EXPERIMENT_TYPES,
+  CreateTaskRequest,
+} from "../types";
 import {
   describeCronExpression,
   validateCronExpression,
@@ -54,7 +59,7 @@ export function CreateTaskModal({ isOpen, onClose, onSubmit }: Props) {
         }));
       }
       setEmailInput("");
-      setErrors((prev) => ({ ...prev, email: undefined }));
+      setErrors((prev) => ({ ...prev, email: "" }));
     } else {
       setErrors((prev) => ({
         ...prev,
@@ -86,7 +91,12 @@ export function CreateTaskModal({ isOpen, onClose, onSubmit }: Props) {
       if (!validateTimeInput(form.hours!, form.minutes!, form.seconds!)) {
         newErrors.time = "Invalid time format";
       } else if (
-        !validateDateTime(form.date, form.hours!, form.minutes!, form.seconds!)
+        !validateDateTime(
+          form.date || "",
+          form.hours || "0",
+          form.minutes || "0",
+          form.seconds || "0"
+        )
       ) {
         newErrors.time = "Task cannot be scheduled in the past";
       }
@@ -95,7 +105,7 @@ export function CreateTaskModal({ isOpen, onClose, onSubmit }: Props) {
         form.cronExpression || ""
       );
       if (!isValid) {
-        newErrors.cronExpression = error;
+        newErrors.cronExpression = error || "Invalid cron expression";
       } else if (normalized) {
         setForm((prev) => ({ ...prev, cronExpression: normalized }));
       }
@@ -129,7 +139,7 @@ export function CreateTaskModal({ isOpen, onClose, onSubmit }: Props) {
           value: scheduleValue,
         },
         testType: form.testType,
-        experimentType: form.experimentType,
+        experimentType: Number(form.experimentType) as number,
         notificationEmails: form.notificationEmails,
       };
 
@@ -200,7 +210,7 @@ export function CreateTaskModal({ isOpen, onClose, onSubmit }: Props) {
             onChange={(e) =>
               setForm({
                 ...form,
-                experimentType: Number(e.target.value) as any,
+                experimentType: Number(e.target.value) as number,
               })
             }
             className="mt-1.5 w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"

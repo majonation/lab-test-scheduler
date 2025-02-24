@@ -13,7 +13,7 @@ export class APIError extends Error {
   constructor(
     message: string,
     public status?: number,
-    public data?: any
+    public data?: unknown
   ) {
     super(message);
     this.name = 'APIError';
@@ -76,7 +76,7 @@ async function request<T>(
     ...options.headers,
   };
 
-  let lastError: Error;
+  let lastError: Error = new Error('Unknown error');
 
   for (let attempt = 0; attempt <= retries; attempt++) {
     try {
