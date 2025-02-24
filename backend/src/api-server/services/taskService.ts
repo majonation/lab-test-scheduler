@@ -2,6 +2,7 @@ import { PrismaClient } from '@prisma/client';
 import { CreateTaskRequest, Task } from '../../types';
 import { TaskMapper } from '../../mappers/taskMapper';
 import { CustomError } from '../../utils/customError';
+import { CronJob } from 'cron';
 
 export class TaskService {
   constructor(private prisma: PrismaClient) {}
@@ -12,6 +13,22 @@ export class TaskService {
   }
 
   async createTask(taskData: CreateTaskRequest): Promise<Task> {
+    let nextExecutionDate: Date | null = null;
+
+    // Calculate nextExecutionDate based on schedule type
+    if (taskData.schedule.type === 'recurring') {
+      // For recurring tasks, use cron syntax to calculate next execution
+      const job = new CronJob({
+        cronTime: taskData.schedule.value,
+        onTick: () => {},
+        start: false
+      });
+      nextExecutionDate = job.nextDate().toJSDate();
+    } else {
+      // For one-time tasks, use the provided date
+      nextExecutionDate = new Date(taskData.schedule.value);
+    }
+
     const task = await this.prisma.task.create({
       data: {
         name: taskData.name,
@@ -20,7 +37,8 @@ export class TaskService {
         scheduleValue: taskData.schedule.value,
         testType: taskData.testType,
         experimentType: taskData.experimentType,
-        notificationEmails: taskData.notificationEmails
+        notificationEmails: taskData.notificationEmails,
+        nextExecutionDate: nextExecutionDate
       }
     });
 
