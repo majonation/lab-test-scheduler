@@ -1,12 +1,13 @@
-import React, { useState, useMemo } from 'react';
-import { Task, TaskLog, CreateTaskForm } from '@/types';
-import { CreateTaskModal } from '@/components/CreateTaskModal';
-import { EditTaskModal } from '@/components/EditTaskModal';
-import { LogsModal } from '@/components/LogsModal';
-import { DeleteConfirmation } from '@/components/DeleteConfirmation';
-import { TaskList } from '@/components/TaskList';
-import { Header } from '@/components/Header';
-import { SearchBar, Filters } from '@/components/SearchBar';
+import React, { useState, useMemo } from "react";
+import { Task, TaskLog, CreateTaskForm } from "@/types";
+import { CreateTaskModal } from "@/components/CreateTaskModal";
+import { EditTaskModal } from "@/components/EditTaskModal";
+import { LogsModal } from "@/components/LogsModal";
+import { DeleteConfirmation } from "@/components/DeleteConfirmation";
+import { TaskList } from "@/components/TaskList";
+import { Header } from "@/components/Header";
+import { SearchBar, Filters } from "@/components/SearchBar";
+import { api } from "@/lib/api";
 
 interface Props {
   tasks: Task[];
@@ -26,7 +27,6 @@ export function TaskListPage({
   isLoading,
   error,
   isUpdating,
-  onCreateTask,
   onDeleteTask,
   onUpdateTask,
   onFetchTaskLogs,
@@ -38,13 +38,16 @@ export function TaskListPage({
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const [taskLogs, setTaskLogs] = useState<TaskLog[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
   const [filters, setFilters] = useState<Filters>({});
 
   const filteredTasks = useMemo(() => {
-    return tasks.filter(task => {
+    return tasks.filter((task) => {
       // Search term filter
-      if (searchTerm && !task.name.toLowerCase().includes(searchTerm.toLowerCase())) {
+      if (
+        searchTerm &&
+        !task.name.toLowerCase().includes(searchTerm.toLowerCase())
+      ) {
         return false;
       }
 
@@ -59,7 +62,10 @@ export function TaskListPage({
       }
 
       // Experiment type filter
-      if (filters.experimentType && task.experimentType !== filters.experimentType) {
+      if (
+        filters.experimentType &&
+        task.experimentType !== filters.experimentType
+      ) {
         return false;
       }
 
@@ -67,12 +73,12 @@ export function TaskListPage({
     });
   }, [tasks, searchTerm, filters]);
 
-  const handleCreateTask = async (formData: CreateTaskForm) => {
+  const handleCreateTask = async (taskForm: CreateTaskForm) => {
     try {
-      await onCreateTask(formData);
+      await api.createTask(taskForm);
       setIsCreateModalOpen(false);
-    } catch (err) {
-      console.error('Failed to create task:', err);
+    } catch (error) {
+      console.error("Failed to create task:", error);
     }
   };
 
@@ -86,7 +92,7 @@ export function TaskListPage({
       await onUpdateTask(updatedTask);
       setIsEditModalOpen(false);
     } catch (err) {
-      console.error('Failed to update task:', err);
+      console.error("Failed to update task:", err);
     }
   };
 
@@ -102,14 +108,14 @@ export function TaskListPage({
         setIsDeleteModalOpen(false);
         setSelectedTask(null);
       } catch (err) {
-        console.error('Failed to delete task:', err);
+        console.error("Failed to delete task:", err);
       }
     }
   };
 
   const handleViewLogs = async (taskId: string) => {
     try {
-      const task = tasks.find(t => t.id === taskId);
+      const task = tasks.find((t) => t.id === taskId);
       if (task) {
         const logs = await onFetchTaskLogs(taskId);
         setTaskLogs(logs);
@@ -117,7 +123,7 @@ export function TaskListPage({
         setIsLogsModalOpen(true);
       }
     } catch (err) {
-      console.error('Failed to fetch task logs:', err);
+      console.error("Failed to fetch task logs:", err);
     }
   };
 
@@ -129,7 +135,10 @@ export function TaskListPage({
 
   return (
     <>
-      <Header onCreateClick={() => setIsCreateModalOpen(true)} isUpdating={isUpdating} />
+      <Header
+        onCreateClick={() => setIsCreateModalOpen(true)}
+        isUpdating={isUpdating}
+      />
 
       <div className="container mx-auto px-4 py-8 pb-24">
         <div className="max-w-[900px] mx-auto bg-white/80 backdrop-blur-sm rounded-xl p-6 shadow-xl">
@@ -138,42 +147,46 @@ export function TaskListPage({
               {error}
             </div>
           )}
-          
-          <TaskList 
+
+          <TaskList
             tasks={paginatedTasks}
             isLoading={isLoading || isUpdating}
             onEdit={handleEditTask}
             onDelete={handleDeleteClick}
             onViewLogs={handleViewLogs}
           />
-          
+
           {!isLoading && totalPages > 1 && (
             <div className="mt-6 flex justify-center space-x-2">
               <button
-                onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
                 disabled={currentPage === 1 || isUpdating}
                 className="px-3 py-1 rounded-md bg-gray-100 text-gray-700 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Previous
               </button>
               <div className="flex items-center space-x-2">
-                {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
-                  <button
-                    key={page}
-                    onClick={() => setCurrentPage(page)}
-                    disabled={isUpdating}
-                    className={`w-8 h-8 rounded-md flex items-center justify-center ${
-                      currentPage === page
-                        ? 'bg-blue-600 text-white'
-                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                    } disabled:opacity-50 disabled:cursor-not-allowed`}
-                  >
-                    {page}
-                  </button>
-                ))}
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map(
+                  (page) => (
+                    <button
+                      key={page}
+                      onClick={() => setCurrentPage(page)}
+                      disabled={isUpdating}
+                      className={`w-8 h-8 rounded-md flex items-center justify-center ${
+                        currentPage === page
+                          ? "bg-blue-600 text-white"
+                          : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                      } disabled:opacity-50 disabled:cursor-not-allowed`}
+                    >
+                      {page}
+                    </button>
+                  )
+                )}
               </div>
               <button
-                onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                onClick={() =>
+                  setCurrentPage((p) => Math.min(totalPages, p + 1))
+                }
                 disabled={currentPage === totalPages || isUpdating}
                 className="px-3 py-1 rounded-md bg-gray-100 text-gray-700 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
               >
@@ -184,10 +197,7 @@ export function TaskListPage({
         </div>
       </div>
 
-      <SearchBar 
-        onSearch={setSearchTerm}
-        onFilterChange={setFilters}
-      />
+      <SearchBar onSearch={setSearchTerm} onFilterChange={setFilters} />
 
       <CreateTaskModal
         isOpen={isCreateModalOpen}

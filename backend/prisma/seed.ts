@@ -1,4 +1,5 @@
 import { PrismaClient } from '@prisma/client';
+import { ExperimentType, LabTestType } from '../src/types';
 
 const prisma = new PrismaClient();
 
@@ -14,8 +15,8 @@ async function main() {
         status: "Scheduled",
         scheduleType: "oneTime",
         scheduleValue: "2024-03-01T10:00:00Z",
-        testType: "Performance",
-        experimentType: "Load Test",
+        testType: 1,
+        experimentType: 1,
         notificationEmails: ["test@example.com"]
       }
     }),
@@ -25,8 +26,8 @@ async function main() {
         status: "Executed",
         scheduleType: "recurring",
         scheduleValue: "0 0 * * *",
-        testType: "Integration",
-        experimentType: "API Test",
+        testType: 2,
+        experimentType: 2,
         notificationEmails: ["dev@example.com", "qa@example.com"]
       }
     })
@@ -42,4 +43,4 @@ main()
   })
   .finally(async () => {
     await prisma.$disconnect();
-  }); 
+  });

@@ -22,11 +22,11 @@ export type ExperimentType = typeof EXPERIMENT_TYPES[number]['id'];
  * These represent different laboratory testing methodologies
  */
 export const LAB_TEST_TYPES = [
-  { id: 'hplc', label: 'High-Performance Liquid Chromatography (HPLC)' },
-  { id: 'ms', label: 'Mass Spectrometry (MS)' },
-  { id: 'nmr', label: 'Nuclear Magnetic Resonance (NMR) Spectroscopy' },
-  { id: 'xray', label: 'X-Ray Crystallography' },
-  { id: 'hts', label: 'High-Throughput Screening (HTS) Assays' }
+  { id: 1, label: 'High-Performance Liquid Chromatography (HPLC)' },
+  { id: 2, label: 'Mass Spectrometry (MS)' },
+  { id: 3, label: 'Nuclear Magnetic Resonance (NMR) Spectroscopy' },
+  { id: 4, label: 'X-Ray Crystallography' },
+  { id: 5, label: 'High-Throughput Screening (HTS) Assays' }
 ] as const;
 
 export type LabTestType = typeof LAB_TEST_TYPES[number]['id'];
@@ -80,9 +80,9 @@ export interface CreateTaskForm {
   /** Cron expression for recurring tasks */
   cronExpression?: string;
   /** Type of lab test */
-  testType: LabTestType;
+  testType: number;
   /** Type of experiment */
-  experimentType: ExperimentType;
+  experimentType: number;
   /** List of notification emails */
   notificationEmails: string[];
 }

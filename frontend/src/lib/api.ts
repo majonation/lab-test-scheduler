@@ -138,16 +138,20 @@ export const api = {
   /**
    * Create a new task
    */
-  async createTask(taskData: Omit<Task, 'id' | 'createdAt' | 'status'>): Promise<Task> {
-    try {
-      return await request<Task>('/tasks', {
-        method: 'POST',
-        body: JSON.stringify(taskData),
-      });
-    } catch (error) {
-      console.error('Failed to create task:', error);
-      throw error;
+  async createTask(task: CreateTaskForm): Promise<Task> {
+    const response = await fetch(`${BASE_URL}/tasks`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(task)
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to create task');
     }
+
+    return response.json();
   },
 
   /**

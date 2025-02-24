@@ -104,7 +104,33 @@ export function CreateTaskModal({ isOpen, onClose, onSubmit }: Props) {
 
   const handleSubmit = () => {
     if (validate()) {
-      onSubmit(form);
+      let scheduleValue: string;
+
+      if (form.scheduleType === "oneTime") {
+        // Combine date and time for one-time schedule
+        const time = `${form.hours?.padStart(2, "0")}:${form.minutes?.padStart(
+          2,
+          "0"
+        )}:${form.seconds?.padStart(2, "0")}`;
+        scheduleValue = `${form.date}T${time}Z`;
+      } else {
+        // Use cron expression for recurring schedule
+        scheduleValue = form.cronExpression || "* * * * *";
+      }
+
+      // Create the task request payload
+      const taskRequest: CreateTaskRequest = {
+        name: form.name,
+        schedule: {
+          type: form.scheduleType,
+          value: scheduleValue,
+        },
+        testType: form.testType,
+        experimentType: form.experimentType,
+        notificationEmails: form.notificationEmails,
+      };
+
+      onSubmit(taskRequest);
       setForm(defaultFormValues);
     }
   };
@@ -190,9 +216,9 @@ export function CreateTaskModal({ isOpen, onClose, onSubmit }: Props) {
             id="testType"
             value={form.testType}
             onChange={(e) =>
-              setForm({ ...form, testType: e.target.value as any })
+              setForm({ ...form, testType: Number(e.target.value) })
             }
-            className="mt-1.5 w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+            className="mt-1.5 w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm"
           >
             {LAB_TEST_TYPES.map((type) => (
               <option key={type.id} value={type.id}>

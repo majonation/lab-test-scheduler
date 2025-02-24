@@ -14,8 +14,8 @@ model Task {
   status            String   // 'Scheduled' | 'Failed' | 'Executed'
   scheduleType      String   // 'oneTime' | 'recurring'
   scheduleValue     String
-  testType          String
-  experimentType    String
+  testType          Int      // Changed from String to Int
+  experimentType    Int      // Changed from String to Int
   notificationEmails String[]
 
   @@map("tasks")  // This maps the model to a lowercase table name
