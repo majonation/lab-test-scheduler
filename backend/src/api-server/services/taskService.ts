@@ -1,7 +1,7 @@
 import { PrismaClient } from '@prisma/client';
-import { CreateTaskRequest, Task } from '../types';
-import { TaskMapper } from '../mappers/taskMapper';
-import { CustomError } from '../utils/customError';
+import { CreateTaskRequest, Task } from '../../types';
+import { TaskMapper } from '../../mappers/taskMapper';
+import { CustomError } from '../../utils/customError';
 
 export class TaskService {
   constructor(private prisma: PrismaClient) {}

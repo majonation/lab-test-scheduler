@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { TaskService } from '../services/taskService';
-import { CreateTaskRequest, Task } from '../types';
+import { CreateTaskRequest, Task } from '../../types';
 
 export class TaskController {
   constructor(private taskService: TaskService) {}

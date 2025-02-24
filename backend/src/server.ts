@@ -1,10 +1,10 @@
 import express from 'express';
 import cors from 'cors';
 import { PrismaClient } from '@prisma/client';
-import { TaskService } from './services/taskService';
-import { TaskController } from './controllers/taskController';
-import { BaseRouter } from './routes/baseRouter';
-import { TaskRouter } from './routes/taskRouter';
+import { TaskService } from './api-server/services/taskService';
+import { TaskController } from './api-server/controllers/taskController';
+import { BaseRouter } from './api-server/routes/baseRouter';
+import { TaskRouter } from './api-server/routes/taskRouter';
 
 const app = express();
 const prisma = new PrismaClient();
