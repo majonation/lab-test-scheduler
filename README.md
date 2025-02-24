@@ -27,7 +27,7 @@ The prototype is not using any AWS services and therefore is without message que
 - **ORM**: Prisma
 - **Task Scheduling**: Custom scheduler with worker processes
 
-## Running with Docker Compose (option 1)
+## RUN-OPTION 1: Running with Docker Compose
 
 ### Prerequisites
 
@@ -51,7 +51,7 @@ docker-compose up --build
 
 3. Access the application at `http://localhost:5173`
 
-## Local Development Setup (option 2 assuming Postgres is running locally)
+## RUN-OPTION 2: Local Development Setup ( assuming Postgres is running locally)
 
 ### Prerequisites
 
@@ -64,7 +64,22 @@ docker-compose up --build
 1. Create a local PostgreSQL database:
 
 ```sql
+-- Create user if not exists
+CREATE USER postgres WITH PASSWORD 'password';
+
+-- Create database
 CREATE DATABASE taskdb;
+
+-- Grant privileges
+GRANT ALL PRIVILEGES ON DATABASE taskdb TO postgres;
+
+-- Connect to taskdb
+\c taskdb
+
+-- Grant schema privileges
+GRANT ALL ON SCHEMA public TO postgres;
+GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO postgres;
+GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO postgres;
 ```
 
 2. Configure your local database connection:
