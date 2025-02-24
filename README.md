@@ -51,7 +51,7 @@ docker-compose up --build
 
 3. Access the application at `http://localhost:5173`
 
-## RUN-OPTION 2: Local Development Setup ( assuming Postgres is running locally)
+## RUN-OPTION 2: Local Development Setup ( assuming PostgreSQL is running locally)
 
 ### Prerequisites
 
