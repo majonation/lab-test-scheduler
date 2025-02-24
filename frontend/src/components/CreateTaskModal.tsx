@@ -13,6 +13,7 @@ import { Input } from "./ui/input";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "./ui/tabs";
 import { Modal } from "./ui/modal";
 import { X } from "lucide-react";
+import { validateAndNormalizeCron } from "../utils/cronValidator";
 
 interface Props {
   isOpen: boolean;
@@ -90,11 +91,13 @@ export function CreateTaskModal({ isOpen, onClose, onSubmit }: Props) {
         newErrors.time = "Task cannot be scheduled in the past";
       }
     } else {
-      if (
-        !form.cronExpression ||
-        !validateCronExpression(form.cronExpression)
-      ) {
-        newErrors.cronExpression = "Invalid cron expression";
+      const { isValid, normalized, error } = validateAndNormalizeCron(
+        form.cronExpression || ""
+      );
+      if (!isValid) {
+        newErrors.cronExpression = error;
+      } else if (normalized) {
+        setForm((prev) => ({ ...prev, cronExpression: normalized }));
       }
     }
 
