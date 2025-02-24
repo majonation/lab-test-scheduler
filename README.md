@@ -27,7 +27,7 @@ The prototype is not using any AWS services and therefore is without message que
 - **ORM**: Prisma
 - **Task Scheduling**: Custom scheduler with worker processes
 
-## Running with Docker
+## Running with Docker Compose (option 1)
 
 ### Prerequisites
 
@@ -51,9 +51,86 @@ docker-compose up --build
 
 3. Access the application at `http://localhost:5173`
 
-## Running with Docker Compose
+## Local Development Setup (option 2 assuming Postgres is running locally)
 
 ### Prerequisites
 
-- Docker
-- Docker Compose
+- Node.js 18+
+- PostgreSQL 14+ running locally
+- npm or yarn
+
+### Database Setup
+
+1. Create a local PostgreSQL database:
+
+```sql
+CREATE DATABASE taskdb;
+```
+
+2. Configure your local database connection:
+
+```bash
+# In backend/.env.local
+DATABASE_URL="postgresql://postgres:password@localhost:5432/taskdb?schema=public"
+```
+
+### Backend Setup
+
+1. Install dependencies:
+
+```bash
+cd backend
+npm install
+```
+
+2. Run database migrations:
+
+```bash
+npm run migrate:local
+```
+
+3. Test database connection:
+
+```bash
+npm run test:db
+```
+
+4. Start the API server:
+
+```bash
+npm run dev
+```
+
+5. Start the scheduler (in a new terminal):
+
+```bash
+cd backend
+npm run scheduler
+```
+
+### Frontend Setup
+
+1. Install dependencies:
+
+```bash
+cd frontend
+npm install
+```
+
+2. Start the development server:
+
+```bash
+npm run dev
+```
+
+The application will be available at:
+
+- Frontend: http://localhost:5173
+- Backend API: http://localhost:3000
+
+### Development Notes
+
+- The API server runs with hot-reload enabled
+- The scheduler runs independently and can be restarted separately
+- Frontend changes are reflected immediately
+- Database schema changes require running migrations
