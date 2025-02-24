@@ -14,8 +14,21 @@ process.on('message', async (message: TaskMessage) => {
   const { task } = message;
 
   try {
-    console.log(`Worker: Executing task ${task.id} (${task.name})`);
+    console.log(`Worker: Starting execution of task ${task.id} (${task.name})`);
     
+    // Set task status to Processing
+    await prisma.task.update({
+      where: { id: task.id },
+      data: {
+        status: 'Processing'
+      }
+    });
+
+    // Simulate task execution
+    console.log(`Worker: Executing task ${task.id} - this will take 30 seconds...`);
+    await new Promise(resolve => setTimeout(resolve, 30000)); // 30 seconds delay
+    console.log(`Worker: Task ${task.id} execution completed`);
+
     // Prepare updates for the task
     const updates: any = {
       status: 'Executed',

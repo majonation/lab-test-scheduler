@@ -40,7 +40,7 @@ export interface Task {
   /** When the task was created */
   createdAt: Date;
   /** Current status of the task */
-  status: 'Scheduled' | 'Failed' | 'Executed';
+  status: 'Scheduled' | 'Failed' | 'Executed' | 'Processing';
   /** Schedule configuration */
   schedule: {
     /** Type of schedule */

@@ -1,7 +1,17 @@
-import React, { useState, useRef } from 'react';
-import { Task, LAB_TEST_TYPES, EXPERIMENT_TYPES } from '../types';
-import { Clock, MoreVertical, ScrollText, Pencil, Trash2, Mail, FlaskRound as Flask, TestTubes, ChevronDown } from 'lucide-react';
-import { isTaskLive, describeCronExpression } from '../utils/cronParser';
+import React, { useState, useRef } from "react";
+import { Task, LAB_TEST_TYPES, EXPERIMENT_TYPES } from "../types";
+import {
+  Clock,
+  MoreVertical,
+  ScrollText,
+  Pencil,
+  Trash2,
+  Mail,
+  FlaskRound as Flask,
+  TestTubes,
+  ChevronDown,
+} from "lucide-react";
+import { isTaskLive, describeCronExpression } from "../utils/cronParser";
 
 interface Props {
   task: Task;
@@ -17,29 +27,42 @@ export function TaskItem({ task, onEdit, onDelete, onViewLogs }: Props) {
 
   // Helper function to get status line color
   const getStatusLineColor = () => {
-    if (task.status === 'Failed') return 'bg-red-600';
-    if (task.status === 'Executed') return 'bg-emerald-500';
-    return task.schedule.type === 'oneTime' ? 'bg-pink-600' : 'bg-blue-600';
+    return task.schedule.type === "oneTime"
+      ? "bg-pink-100 pink-800"
+      : "bg-blue-100 blue-800";
   };
 
   // Helper function to get status badge styles
   const getStatusBadgeStyles = () => {
-    if (task.status === 'Executed') return 'bg-emerald-100 text-emerald-800';
-    if (task.status === 'Failed') return 'bg-red-100 text-red-800';
-    return task.schedule.type === 'oneTime' 
-      ? 'bg-pink-100 text-pink-800' 
-      : 'bg-blue-100 text-blue-800';
+    switch (task.status) {
+      case "Executed":
+        return "bg-emerald-100 text-emerald-800";
+      case "Failed":
+        return "bg-red-100 text-red-800";
+      case "Processing":
+        return "bg-yellow-100 text-yellow-800";
+      case "Scheduled":
+        return "bg-blue-100 text-blue-800";
+      default:
+        return "bg-blue-100 text-blue-800";
+    }
   };
 
   // Find the test type label
-  const testTypeLabel = LAB_TEST_TYPES.find(type => type.id === task.testType)?.label || task.testType;
-  const experimentTypeLabel = EXPERIMENT_TYPES.find(type => type.id === task.experimentType)?.label || 'Unknown Experiment';
+  const testTypeLabel =
+    LAB_TEST_TYPES.find((type) => type.id === task.testType)?.label ||
+    task.testType;
+  const experimentTypeLabel =
+    EXPERIMENT_TYPES.find((type) => type.id === task.experimentType)?.label ||
+    "Unknown Experiment";
 
   return (
     <div className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow relative overflow-visible">
       {/* Status Indicator Line */}
-      <div className={`absolute top-0 left-0 w-1 h-full ${getStatusLineColor()}`} />
-      
+      <div
+        className={`absolute top-0 left-0 w-1 h-full ${getStatusLineColor()}`}
+      />
+
       {/* Compact View */}
       <div className="p-4">
         <div className="flex items-start gap-4">
@@ -59,7 +82,7 @@ export function TaskItem({ task, onEdit, onDelete, onViewLogs }: Props) {
             <div className="flex items-center text-sm text-gray-600">
               <Clock size={14} className="mr-1.5 flex-shrink-0" />
               <span className="truncate">
-                {task.schedule.type === 'oneTime'
+                {task.schedule.type === "oneTime"
                   ? new Date(task.schedule.value).toLocaleString()
                   : task.schedule.value}
               </span>
@@ -68,7 +91,9 @@ export function TaskItem({ task, onEdit, onDelete, onViewLogs }: Props) {
 
           {/* Status and Actions */}
           <div className="flex items-center gap-2 flex-shrink-0">
-            <span className={`text-xs px-2 py-0.5 rounded-full font-medium whitespace-nowrap ${getStatusBadgeStyles()}`}>
+            <span
+              className={`text-xs px-2 py-0.5 rounded-full font-medium whitespace-nowrap ${getStatusBadgeStyles()}`}
+            >
               {task.status}
             </span>
 
@@ -78,7 +103,9 @@ export function TaskItem({ task, onEdit, onDelete, onViewLogs }: Props) {
             >
               <ChevronDown
                 size={18}
-                className={`transform transition-transform ${isExpanded ? 'rotate-180' : ''}`}
+                className={`transform transition-transform ${
+                  isExpanded ? "rotate-180" : ""
+                }`}
               />
             </button>
 
@@ -94,13 +121,13 @@ export function TaskItem({ task, onEdit, onDelete, onViewLogs }: Props) {
               {/* Dropdown Menu */}
               {isMenuOpen && (
                 <>
-                  <div 
-                    className="fixed inset-0 z-50" 
-                    onClick={() => setIsMenuOpen(false)} 
+                  <div
+                    className="fixed inset-0 z-50"
+                    onClick={() => setIsMenuOpen(false)}
                   />
-                  <div 
+                  <div
                     className="absolute right-0 z-50 w-48 bg-white rounded-md shadow-lg py-1 border border-gray-200"
-                    style={{ top: 'calc(100% + 4px)' }}
+                    style={{ top: "calc(100% + 4px)" }}
                   >
                     <button
                       onClick={() => {
@@ -143,7 +170,7 @@ export function TaskItem({ task, onEdit, onDelete, onViewLogs }: Props) {
         <div
           className={`
             overflow-hidden transition-all duration-200 ease-in-out
-            ${isExpanded ? 'max-h-96 mt-4' : 'max-h-0'}
+            ${isExpanded ? "max-h-96 mt-4" : "max-h-0"}
           `}
         >
           <div className="space-y-3 pt-3 border-t border-gray-100">
@@ -160,7 +187,7 @@ export function TaskItem({ task, onEdit, onDelete, onViewLogs }: Props) {
             </div>
 
             {/* Schedule Description */}
-            {task.schedule.type === 'recurring' && (
+            {task.schedule.type === "recurring" && (
               <div className="text-sm text-gray-600">
                 <p>{describeCronExpression(task.schedule.value)}</p>
               </div>
@@ -171,7 +198,7 @@ export function TaskItem({ task, onEdit, onDelete, onViewLogs }: Props) {
               <div className="flex items-start space-x-2 text-sm text-gray-600">
                 <Mail size={16} className="mt-1 flex-shrink-0" />
                 <div className="flex flex-wrap gap-1">
-                  {task.notificationEmails.map(email => (
+                  {task.notificationEmails.map((email) => (
                     <span
                       key={email}
                       className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800"
