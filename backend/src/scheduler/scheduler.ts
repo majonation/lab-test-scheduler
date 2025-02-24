@@ -109,7 +109,9 @@ export class Scheduler {
    */
   private processTask(task: PrismaTask): void {
     console.log(`Starting worker for task ${task.id} (${task.name})`);
-    const worker = fork(path.join(__dirname, 'worker.js'));
+    const worker = fork(path.join(__dirname, 'worker.ts'), [], {
+      execArgv: ['-r', 'ts-node/register']
+    });
     
     worker.send({ task });
 
