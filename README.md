@@ -1,6 +1,6 @@
 # Lab Test Scheduler
 
-A web application for scheduling and managing laboratory tests with support for both one-time and recurring executions.
+A web application for scheduling and managing laboratory tests with support for both one-time and recurring executions. This is an excercise for managing distributed systems.
 
 ## Overview
 
@@ -13,11 +13,13 @@ The Lab Test Scheduler enables laboratory personnel to:
 - Manage different test types and experiments
 - Handle concurrent test execution with locking mechanism
 
-## System Design
+## System Design for production
 
 For detailed information about the system architecture, components, and production setup, please refer to our [Design Document](docs/Design%20Document.pdf).
 
 ## Tech Stack for the Prototype
+
+The prototype is not using any AWS services and therefore is without message queue. It showcasing the node.js and react parts and runs in one Docker container.
 
 - **Frontend**: React, TypeScript, TailwindCSS, Vite
 - **Backend**: Node.js, Express, TypeScript
