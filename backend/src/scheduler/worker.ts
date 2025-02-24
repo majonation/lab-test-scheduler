@@ -26,7 +26,11 @@ process.on('message', async (message: TaskMessage) => {
     // For recurring tasks, calculate next execution time
     if (task.scheduleType === 'recurring') {
       console.log(`Worker: Calculating next execution for recurring task ${task.id}`);
-      const job = new CronJob(task.scheduleValue);
+      const job = new CronJob({
+        cronTime: task.scheduleValue,
+        onTick: () => {},
+        start: false
+      });
       updates.nextExecutionDate = job.nextDate().toJSDate();
       console.log(`Worker: Next execution scheduled for ${updates.nextExecutionDate}`);
     }
