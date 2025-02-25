@@ -39,7 +39,7 @@ The prototype is not using any AWS services and therefore is without message que
 1. Clone the repository:
 
 ```bash
-git clone https://github.com/yourusername/lab-test-scheduler.git
+git clone https://github.com/majonation/lab-test-scheduler
 cd lab-test-scheduler
 ```
 

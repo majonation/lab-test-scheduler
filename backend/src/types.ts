@@ -6,7 +6,7 @@ export interface Task {
   id: string;
   name: string;
   createdAt: Date;
-  status: 'Scheduled' | 'Failed' | 'Executed';
+  status: 'Scheduled' | 'Failed' | 'Executed' | 'Processing';
   schedule: {
     type: 'oneTime' | 'recurring';
     value: string;
