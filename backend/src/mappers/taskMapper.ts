@@ -7,7 +7,7 @@ export class TaskMapper {
       id: prismaTask.id,
       name: prismaTask.name,
       createdAt: prismaTask.createdAt,
-      status: prismaTask.status as 'Scheduled' | 'Failed' | 'Executed',
+      status: prismaTask.status as 'Scheduled' | 'Failed' | 'Executed' | 'Processing',
       schedule: {
         type: prismaTask.scheduleType as 'oneTime' | 'recurring',
         value: prismaTask.scheduleValue
